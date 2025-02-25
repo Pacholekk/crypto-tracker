@@ -39,3 +39,27 @@ export const getCryptoDetails = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed getting crypto data" });
   }
 };
+
+/* TODO:
+write fnc that gets charts data*/
+
+export const getCryptoCharts = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { days = 7 } = req.query;
+
+    const response = await axios.get(
+      `${COINGECKO_API_URL}/coins/${id}/market_charts`,
+      {
+        params: {
+          vs_currency: "usd",
+          days: days,
+          interval: Number(days) === 1 ? "hourly" : "daily",
+        },
+      }
+    );
+  } catch (err) {
+    console.error("Error getting charts from crypto page", err);
+    res.send(500).json({ message: "Error getting charts data" });
+  }
+};
